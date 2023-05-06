@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { NavLink } from "../Navbar";
 import Link from "next/link";
+import LogOut from "./LogOut";
 
 
 
 
 interface SlideOverProps {
     navLinks: NavLink[];
+	isAuth: boolean;
 }
 
-const SlideOver: FC<SlideOverProps> = ({ navLinks }) => {
+const SlideOver: FC<SlideOverProps> = ({ navLinks, isAuth }) => {
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -66,11 +68,16 @@ const SlideOver: FC<SlideOverProps> = ({ navLinks }) => {
 											</div>
 											<ScrollArea className="relative mt-6 flex-1 px-4 sm:px-6 h-full flex flex-col border-t-2">
                                                 <div className="pt-6" />
-												{navLinks.map((link, index) => (
-                                                    <Link className={`${index !== 0 ? "border-t" : ""} flex gap-2 items-center w-full max-w-xs hover:bg-muted py-3 px-2 divide-y`} key={link.id} href={link.href}>
-                                                        {link.icon} {link.name}
-                                                    </Link>
-                                                ))}
+												{navLinks.map((link, index) => {
+													if (isAuth && link.nonAuth) return <Fragment key={link.id}></Fragment>
+													return (
+														<Link onClick={() => setOpen(false)} className={`${index !== 0 ? "border-t" : ""} flex gap-2 items-center w-full max-w-xs hover:bg-muted py-3 px-2 divide-y`} key={link.id} href={link.href}>
+															{link.icon} {link.name}
+														</Link>
+                                                )})}
+												{isAuth ? (
+													<LogOut smallScreen/>
+												) : null}
 											</ScrollArea>
 										</div>
 									</Dialog.Panel>
