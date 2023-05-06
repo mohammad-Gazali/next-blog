@@ -11,14 +11,14 @@ export interface NavLink {
 	name: string;
 	href: string;
 	nonAuth: boolean;
+	needAuth: boolean;
 	icon: JSX.Element;
 }
 
 const navLinks: NavLink[] = [
-	// TODO: edit href attributes
-	{ id: 1, name: "Home", href: "/", icon: <Home />, nonAuth: false },
-	{ id: 2, name: "Add Post", href: "/", icon: <Plus />, nonAuth: false },
-	{ id: 3, name: "Log in", href: "/login", icon: <LogIn />, nonAuth: true },
+	{ id: 1, name: "Home", href: "/", icon: <Home />, nonAuth: false, needAuth: false },
+	{ id: 2, name: "Add Post", href: "/add-post", icon: <Plus />, nonAuth: false, needAuth: true },
+	{ id: 3, name: "Log in", href: "/login", icon: <LogIn />, nonAuth: true, needAuth: false },
 ];
 
 const Navbar = async () => {
@@ -28,7 +28,7 @@ const Navbar = async () => {
     const isAuth = Boolean(session?.user.id);
 
 	return (
-		<nav className="py-4 fixed border-b w-full z-40">
+		<nav className="py-4 fixed border-b w-full z-40 bg-background">
 			<div className="flex items-center justify-between max-w-7xl mx-auto lg:px-10 md:px-8 sm:px-6 px-4">
 				<div className="sm:flex hidden items-center gap-6">
 					<Link className="text-lg font-semibold" href="/">
@@ -36,7 +36,7 @@ const Navbar = async () => {
 					</Link>
 					<ul className="flex items-center gap-4 text-sm">
 						{navLinks.map((link) => {
-							if (link.nonAuth && isAuth)
+							if ((link.nonAuth && isAuth) || (link.needAuth && !isAuth))
 								return <Fragment key={link.id}></Fragment>;
 							return (
 								<Link

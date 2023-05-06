@@ -81,3 +81,7 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+.ql-container.ql-snow {
+  background-color: white;
+}

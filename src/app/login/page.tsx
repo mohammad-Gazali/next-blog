@@ -1,14 +1,21 @@
 import { UserAuthForm } from "@/components";
 import { buttonVariants } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 
+
+
+export const metadata: Metadata = {
+    title: "Login Page | Next Blog",
+    description: "Login Page For Next Blog Website"
+}
 
 
 const page = async () => {
 
   return (
-    <section className="absolute inset-0 mx-auto container flex h-screen flex-col justify-center items-center">
+    <main className="absolute inset-0 mx-auto container flex h-screen flex-col justify-center items-center">
         <div className="mx-auto w-full flex flex-col justify-center gap-6 max-w-lg">
             <div className="flex flex-col items-center gap-6 text-center">
                 <Link href="/" className={buttonVariants({ variant: "ghost", className: "w-fit" })}>
@@ -22,7 +29,7 @@ const page = async () => {
             </div>
             <UserAuthForm />
         </div>
-    </section>
+    </main>
   )
 }
 
