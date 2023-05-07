@@ -1,7 +1,6 @@
-import { ChangeEvent, Dispatch, FC, Fragment, SetStateAction, useState } from "react"
-import { Combobox, Transition } from "@headlessui/react"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { ScrollArea } from "./ui/scroll-area";
+import { ChangeEvent, Dispatch, FC, Fragment, SetStateAction, useState } from "react";
+import { Combobox, Transition } from "@headlessui/react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Tag } from "@prisma/client";
 
 
@@ -50,14 +49,13 @@ const TagsCombobox: FC<TagsComboboxProps> = ({ tags, selectedTags, setSelectedTa
               setFilteredTags(tags);
             }}
           >
-            <Combobox.Options className="absolute w-full">
-              <ScrollArea className="list-none mt-1 h-44 w-full overflow-auto rounded-md border bg-background py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Combobox.Options className="absolute w-full max-h-44 mt-1 overflow-auto rounded-md border bg-background py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm custom-scrollbar">
                   {filteredTags.length === 0 && query !== "" ? (
                     <div className="relative cursor-default select-none py-2 px-4 text-muted-foreground">
                       Nothing found.
                     </div>
                   ) : (
-                    filteredTags.map((tag) => (
+                    filteredTags.map(tag => (
                       <Combobox.Option
                         key={tag.id}
                         className={({ active }) =>
@@ -90,8 +88,7 @@ const TagsCombobox: FC<TagsComboboxProps> = ({ tags, selectedTags, setSelectedTa
                       </Combobox.Option>
                     ))
                   )}
-                
-              </ScrollArea>
+              
             </Combobox.Options>
           </Transition>
         </div>

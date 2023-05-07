@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Laptop } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 
 
 
@@ -27,10 +27,6 @@ const ThemeToggle = () => {
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
                     <Moon className="me-2 h-4 w-4" />
                     <span>Dark</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                    <Laptop className="me-2 h-4 w-4" />
-                    <span>System</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

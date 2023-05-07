@@ -1,4 +1,5 @@
 import { Hero } from "@/components/layout";
+import { db } from "@/lib/db";
 import { Metadata } from "next";
 
 
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   description: "Home Page For Next Blog Website"
 }
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="">
       <Hero />

@@ -4,25 +4,80 @@ import { FC, FormEvent, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "./ui/button";
-import { Edit } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import TagsCombobox from "./TagsCombobox";
 import { Tag } from "@prisma/client";
+import { useTheme } from "next-themes";
+import { db } from "@/lib/db";
+import { toast } from "./ui/use-toast";
 
 
 
 interface AddPostFormProps {
-    tags: Tag[]
+    tags: Tag[];
 }
 
 const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
   
+    const { theme } = useTheme();
     const [contentValue, setContentValue] = useState("");
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+
+        e.preventDefault();
+
+        setIsLoading(true);
+
+        try {
+
+            const formData = Object.fromEntries(new FormData(e.currentTarget)); 
+            
+            const response = await fetch("/api/add-post", {
+                method: "POST",
+                body: JSON.stringify({
+                    formData,
+                    tags: tags.map(tag => ({id: tag.id})),
+                    contentValue
+                })
+            })
+
+            if (response.status == 200) {
+                toast({
+                    title: "Success",
+                    description: "Post Has Been Created Successfully"
+                })
+            } else {
+
+                const data = await response.json();
+
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: data.message
+                })
+
+            }
+
+        } catch (error) {
+          
+            console.log(error)
+
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Something wrong happend while creating the post."
+            })
+
+        } finally {
+
+            setIsLoading(false);
+            
+        }
 
     }
 
@@ -52,12 +107,12 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
                 </div>
                 <div className="space-y-2">
                     <Label>Content</Label>
-                    {/* // TODO: Handling Container Background of ReactQuill */}
+                    <DarkThemeStyles theme={theme} />
                     <ReactQuill
                     theme="snow"
                     value={contentValue}
                     onChange={setContentValue}
-                    className="h-80 bg-white text-black"
+                    className=""
                     modules={{
                         toolbar: [
                             [{ "header": [1, 2, 3, 4, 5, 6, false] }],
@@ -70,24 +125,120 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
                             ["clean"]
                         ],
                     }}
-                    formats={[
-                        "header",
-                        "bold", "italic", "underline", "strike",
-                        "color", "background",
-                        "blockquote", "code-block",
-                        "list", "bullet",
-                        "align", "indent",
-                        "link", "image", 
-                        "clean"
-                    ]}
                     />
                 </div>
-                <Button size="lg" className="sm:mt-20 mt-28 text-lg w-fit">
-                    Create <Edit />
+                <Button disabled={isLoading} className="mt-8 w-fit">
+                    Create {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Edit className="w-4 h-4" />}
                 </Button>
             </form>
         </div>
     )
+}
+
+const DarkThemeStyles = ({ theme }: { theme?: string }) => {
+
+    if (theme !== "dark") return <></>
+
+    return <style>{`
+    .ql-stroke {
+        stroke: hsl(var(--muted-foreground)) !important;
+    }
+
+    .ql-fill {
+        fill: hsl(var(--muted-foreground)) !important;
+    }
+
+    .ql-picker-label {
+        color: hsl(var(--foreground)) !important;
+    }
+
+    .ql-picker-options {
+        background-color: hsl(var(--background)) !important;
+        border-color: hsl(var(--input)) !important;
+        color: hsl(var(--foreground)) !important;
+    }
+
+    .ql-snow.ql-toolbar button:hover,
+    .ql-snow .ql-toolbar button:hover,
+    .ql-snow.ql-toolbar button:focus,
+    .ql-snow .ql-toolbar button:focus,
+    .ql-snow.ql-toolbar button.ql-active,
+    .ql-snow .ql-toolbar button.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-label:hover,
+    .ql-snow .ql-toolbar .ql-picker-label:hover,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-item:hover,
+    .ql-snow .ql-toolbar .ql-picker-item:hover,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+        color: #7e22ce !important;
+    }
+
+    .ql-snow.ql-toolbar button:hover .ql-fill,
+    .ql-snow .ql-toolbar button:hover .ql-fill,
+    .ql-snow.ql-toolbar button:focus .ql-fill,
+    .ql-snow .ql-toolbar button:focus .ql-fill,
+    .ql-snow.ql-toolbar button.ql-active .ql-fill,
+    .ql-snow .ql-toolbar button.ql-active .ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+    .ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+        fill: #7e22ce !important;
+    }
+    .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .ql-snow .ql-toolbar button:hover .ql-stroke,
+    .ql-snow.ql-toolbar button:focus .ql-stroke,
+    .ql-snow .ql-toolbar button:focus .ql-stroke,
+    .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+    .ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar button:hover .ql-stroke-miter,
+    .ql-snow.ql-toolbar button:focus .ql-stroke-miter,
+    .ql-snow .ql-toolbar button:focus .ql-stroke-miter,
+    .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+    .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+    .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+        stroke: #7e22ce !important;
+    }
+
+    .ql-snow {
+        border-color: hsl(var(--input)) !important;
+    }`}</style>
 }
 
 export default AddPostForm

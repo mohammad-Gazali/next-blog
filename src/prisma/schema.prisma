@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Post {
@@ -19,7 +19,6 @@ model Post {
   author      User        @relation(fields: [authorId], references: [id])
   authorId    String
   tags        Tag[]
-  postImages  PostImage[]
 }
 
 model Tag {
@@ -28,12 +27,6 @@ model Tag {
   posts Post[]
 }
 
-model PostImage {
-  id     String @id @default(cuid())
-  url    String
-  post   Post   @relation(fields: [postId], references: [id])
-  postId String
-}
 
 // next-auth models
 

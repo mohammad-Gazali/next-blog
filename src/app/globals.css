@@ -82,6 +82,23 @@
   }
 }
 
-.ql-container.ql-snow {
-  background-color: white;
+.ql-container {
+  height: 20rem;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.25rem;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
 }

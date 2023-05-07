@@ -1,6 +1,10 @@
 import { AddPostForm } from "@/components";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Metadata } from "next";
+import { getServerSession } from "next-auth";
+
+
 
 export const metadata: Metadata = {
 	title: "Add Post | Next Blog",
