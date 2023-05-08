@@ -1,8 +1,8 @@
 import { Providers } from "@/components";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
-import "./globals.css";
 import { Navbar } from "@/components/layout";
+import "./globals.css";
 
 
 

@@ -11,7 +11,6 @@ import { Textarea } from "./ui/textarea";
 import TagsCombobox from "./TagsCombobox";
 import { Tag } from "@prisma/client";
 import { useTheme } from "next-themes";
-import { db } from "@/lib/db";
 import { toast } from "./ui/use-toast";
 
 
@@ -24,7 +23,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
   
     const { theme } = useTheme();
     const [contentValue, setContentValue] = useState("");
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -36,21 +35,25 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
         try {
 
             const formData = Object.fromEntries(new FormData(e.currentTarget)); 
-            
+
             const response = await fetch("/api/add-post", {
                 method: "POST",
                 body: JSON.stringify({
                     formData,
-                    tags: tags.map(tag => ({id: tag.id})),
+                    tags: selectedTags.map(id => ({id})),
                     contentValue
                 })
             })
 
             if (response.status == 200) {
+                
                 toast({
                     title: "Success",
                     description: "Post Has Been Created Successfully"
                 })
+
+                window.location.replace("/");
+
             } else {
 
                 const data = await response.json();
@@ -70,7 +73,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: "Something wrong happend while creating the post."
+                description: String(error)
             })
 
         } finally {
@@ -89,15 +92,15 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
             <form className="flex flex-col gap-6 mb-10" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                     <Label htmlFor="title">Title</Label>
-                    <Input id="title" name="title" />
+                    <Input id="title" name="title" required />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="slug">Slug</Label>
-                    <Input id="slug" name="slug" />
+                    <Input id="slug" name="slug" required />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" name="description" />
+                    <Textarea id="description" name="description" required />
                 </div>
                 <div className="space-y-2 z-30">
                     <Label htmlFor="tags">

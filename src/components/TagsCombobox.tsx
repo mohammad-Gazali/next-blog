@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, FC, Fragment, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, FC, Fragment, SetStateAction, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Tag } from "@prisma/client";
@@ -7,15 +7,14 @@ import { Tag } from "@prisma/client";
 
 interface TagsComboboxProps {
   tags: Tag[];
-  selectedTags: Tag[];
-  setSelectedTags: Dispatch<SetStateAction<Tag[]>>;
+  selectedTags: string[];
+  setSelectedTags: Dispatch<SetStateAction<string[]>>;
 }
 
 const TagsCombobox: FC<TagsComboboxProps> = ({ tags, selectedTags, setSelectedTags }) => {
 
   const [filteredTags, setFilteredTags] = useState<Tag[]>(tags);
   const [query, setQuery] = useState("");
-
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)

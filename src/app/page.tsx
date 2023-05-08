@@ -1,3 +1,4 @@
+import { PostList } from "@/components";
 import { Hero } from "@/components/layout";
 import { db } from "@/lib/db";
 import { Metadata } from "next";
@@ -10,9 +11,18 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
+
+  const posts = await db.post.findMany({
+    include: {
+      author: true,
+      tags: true,
+    }
+  });
+
   return (
-    <main className="">
+    <main>
       <Hero />
+      <PostList posts={posts} />
     </main>
   )
 }

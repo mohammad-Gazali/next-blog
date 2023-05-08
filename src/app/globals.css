@@ -48,8 +48,8 @@
     --popover: 224 71% 4%;
     --popover-foreground: 215 20.2% 65.1%;
  
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
  
     --border: 216 34% 17%;
     --input: 216 34% 17%;
@@ -86,6 +86,13 @@
   height: 20rem;
 }
 
+.ql-container img {
+  width: 400px !important;
+  aspect-ratio: 1 !important;
+  object-fit: cover !important;
+  margin: 0 auto;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 0.5rem;
   height: 0.25rem;
@@ -101,4 +108,16 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 0.25rem;
+}
+
+.post-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.post-section img {
+  width: 400px !important;
+  aspect-ratio: 1 !important;
+  object-fit: cover !important;
+  margin: 0 auto;
 }
