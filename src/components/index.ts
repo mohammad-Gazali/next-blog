@@ -2,7 +2,8 @@ import Providers from "./Providers";
 import AddPostForm from "./AddPostForm";
 import UserAuthForm from "./UserAuthForm";
 import PostList from "./PostList";
-import CodeBlockStyle from "./CodeBlockStyle";
+import CustomQuillStyles from "./CustomQuillStyles";
+import UpdatePostForm from "./UpdatePostForm";
 
 
 export {
@@ -10,6 +11,7 @@ export {
     UserAuthForm,
     AddPostForm,
     PostList,
-    CodeBlockStyle
+    CustomQuillStyles,
+    UpdatePostForm,
 }
 

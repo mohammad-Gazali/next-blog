@@ -1,4 +1,4 @@
-import { AddPostForm } from "@/components";
+import { AddPostForm, CustomQuillStyles } from "@/components";
 import { db } from "@/lib/db";
 import { Metadata } from "next";
 
@@ -15,6 +15,7 @@ const page = async () => {
 
 	return (
 		<main className="pt-32">
+			<CustomQuillStyles />
 			<AddPostForm tags={tags} />
 		</main>
 	);

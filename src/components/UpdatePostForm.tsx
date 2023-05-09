@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "./ui/button";
@@ -9,21 +9,22 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import TagsCombobox from "./TagsCombobox";
-import { Tag } from "@prisma/client";
+import { Post, Tag } from "@prisma/client";
 import { useTheme } from "next-themes";
 import { toast } from "./ui/use-toast";
 
 
 
-interface AddPostFormProps {
+interface UpdatePostFormProps {
     tags: Tag[];
+    post: Post & { tags: Tag[] };
 }
 
-const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
+const UpdatePostForm: FC<UpdatePostFormProps> = ({ tags, post }) => {
   
     const { theme } = useTheme();
-    const [contentValue, setContentValue] = useState("");
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [contentValue, setContentValue] = useState(post.content);
+    const [selectedTags, setSelectedTags] = useState<string[]>(post.tags.map(tag => tag.id));
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -36,11 +37,15 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
 
             const formData = Object.fromEntries(new FormData(e.currentTarget)); 
 
-            const response = await fetch("/api/add-post", {
+
+            const new_tags = selectedTags.map(id => ({id}))
+
+            const response = await fetch("/api/update-post", {
                 method: "POST",
                 body: JSON.stringify({
+                    id: post.id,
                     formData,
-                    tags: selectedTags.map(id => ({id})),
+                    tags: new_tags,
                     contentValue
                 })
             })
@@ -49,7 +54,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
                 
                 toast({
                     title: "Success",
-                    description: "Post Has Been Created Successfully"
+                    description: "Post Has Been Updated Successfully"
                 })
 
                 window.location.replace("/");
@@ -77,9 +82,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
             })
 
         } finally {
-
             setIsLoading(false);
-            
         }
 
     }
@@ -87,20 +90,20 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
     return (
         <div className="lg:px-10 md:px-8 sm:px-6 px-4">
             <h2 className="pb-8 sm:text-4xl text-2xl font-semibold tracking-tight transition-colors first:mt-0">
-                Adding Post
+                Updating Post
             </h2>
             <form className="flex flex-col gap-6 mb-10" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                     <Label htmlFor="title">Title</Label>
-                    <Input id="title" name="title" required />
+                    <Input id="title" name="title" defaultValue={post.title} required />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="slug">Slug</Label>
-                    <Input id="slug" name="slug" required />
+                    <Input id="slug" name="slug" defaultValue={post.slug} required />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" name="description" required />
+                    <Textarea id="description" defaultValue={post.description} name="description" required />
                 </div>
                 <div className="space-y-2 z-30">
                     <Label htmlFor="tags">
@@ -115,6 +118,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
                     theme="snow"
                     value={contentValue}
                     onChange={setContentValue}
+                    className=""
                     modules={{
                         toolbar: [
                             [{ "header": [1, 2, 3, 4, 5, 6, false] }],
@@ -130,7 +134,7 @@ const AddPostForm: FC<AddPostFormProps> = ({ tags }) => {
                     />
                 </div>
                 <Button disabled={isLoading} className="mt-8 w-fit">
-                    Create {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Edit className="w-4 h-4" />}
+                    Update {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Edit className="w-4 h-4" />}
                 </Button>
             </form>
         </div>
@@ -243,4 +247,4 @@ const DarkThemeStyles = ({ theme }: { theme?: string }) => {
     }`}</style>
 }
 
-export default AddPostForm
+export default UpdatePostForm

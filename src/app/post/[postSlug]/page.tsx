@@ -1,10 +1,12 @@
-import { CodeBlockStyle } from "@/components";
+import { CustomQuillStyles } from "@/components";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/lib/db";
-import { format, formatDuration, Duration } from "date-fns";
+import { format } from "date-fns";
 import "react-quill/dist/quill.snow.css";
 
 
+
+export const revalidate = 60;
 
 const PostPage = async ({ params: { postSlug } }: { params: { postSlug: string } }) => {
 
@@ -20,7 +22,7 @@ const PostPage = async ({ params: { postSlug } }: { params: { postSlug: string }
 
   return (
     <main className="pt-32 max-w-5xl mx-auto sm:px-10 md:px-6 px-4 mb-20">
-        <CodeBlockStyle />
+        <CustomQuillStyles />
         <h1 className="lg:text-6xl md:text-5xl text-4xl font-bold">
             {post?.title}
         </h1>
@@ -28,7 +30,9 @@ const PostPage = async ({ params: { postSlug } }: { params: { postSlug: string }
           <span className="font-bold">{post?.author.name}</span><span>({format(post?.createdAt!, "PPPP")})</span>
         </p>
         <Separator className="my-10" orientation="horizontal" />
-        <section className="ql-editor p-0 post-section" dangerouslySetInnerHTML={{ __html: post?.content! }}/>
+        <div className="ql-snow">
+          <section className="ql-editor p-0 post-section" dangerouslySetInnerHTML={{ __html: post?.content! }}/>
+        </div>
         <Separator className="my-10" orientation="horizontal" />
     </main>
   )
