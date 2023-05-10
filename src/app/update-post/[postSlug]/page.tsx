@@ -10,6 +10,14 @@ import { notFound } from "next/navigation";
 
 export const revalidate = 0;
 
+export async function generateStaticParams() {
+    const posts = await db.post.findMany({})
+   
+    return posts.map((post) => ({
+      postSlug: post.slug,
+    }));
+}
+
 export async function generateMetadata({ params: { postSlug } }: { params: { postSlug: string } }): Promise<Metadata> {
 
     const post = await db.post.findUnique({
