@@ -8,6 +8,15 @@ import "react-quill/dist/quill.snow.css";
 
 export const revalidate = 60;
 
+
+export async function generateStaticParams() {
+  const posts = await db.post.findMany({})
+ 
+  return posts.map((post) => ({
+    postSlug: post.slug,
+  }));
+}
+
 const PostPage = async ({ params: { postSlug } }: { params: { postSlug: string } }) => {
 
   const post = await db.post.findUnique({
