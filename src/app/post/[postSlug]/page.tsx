@@ -29,6 +29,12 @@ const PostPage = async ({ params: { postSlug } }: { params: { postSlug: string }
     }
   })
 
+  if (!post) {
+    return {
+      notFound: true
+    }
+  }
+
   return (
     <main className="pt-32 max-w-5xl mx-auto sm:px-10 md:px-6 px-4 mb-20">
         <CustomQuillStyles />
